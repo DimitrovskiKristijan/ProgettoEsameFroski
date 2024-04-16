@@ -10,8 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <link rel="stylesheet" href="Bootstrap/bootstrap.css">
-    <link rel="stylesheet" href="index.css">
-    <script src="index.js"></script>
+    <link rel="stylesheet" href="nonAmm.css">
+    <script src="nonAmm.js"></script>
 
     <title>COLLEGIUMPRESS</title>
 </head>
@@ -22,9 +22,11 @@
         <div class="container-fluid">
           <a class="navbar-brand" href="#">
             <img src="../img/Screenshot 2024-03-14 100215.png" alt="" width="70" height="70" class="d-inline-block align-text-top">
-            HOME
+            <b id="home"> DOCENTE</b>
           </a>
-          <button class="btn btn-primary" type="button"  id="btnGoogle">Google</button>
+          <button type="button" id="btnLogout"> <span class="material-symbols-outlined">
+            logout
+            </span></button>
         </div>
       </nav>
       <br>
@@ -34,11 +36,16 @@
             <img src="../img/Immagini_coordinate_VALLAURI4.png"  alt="Inserisci un'immagine" class="IMG">
             <h1 class="title">COLLEGIUMPRESS</h1>
         </div>
-        <br><br>
+        <br>
             <div class="row">
                 <div class="col">
-                          <h1 class="txtCont">ESEGUI IL LOGIN PER ACCEDERE ALL'AREA RISERVATA...</h1>
+                    <div class="presenza">
+                          <h1 class="txtCont">BENVENUTO [NOME , COGNOME]</h1>
                           <br>
+                          <h3>FIRMA PRESENZA!</h3>
+                          <br>
+                          <a href="Storico.html"><button class="btn btn-primary" id="btnPresenza"><h1>PRESENZA</h1></button></a>
+                        </div>
                 </div>
                   
 

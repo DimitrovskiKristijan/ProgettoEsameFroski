@@ -1,0 +1,113 @@
+/* Stili di base */
+body {
+    background-color: #0e4193;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif; /* Utilizza una famiglia di font più standard per una migliore leggibilità */
+}
+
+.title {
+    font-size: 80px; /* Riduci la dimensione del titolo per dispositivi mobili */
+    font-family: fantasy;
+    text-align: center;
+    margin-top: 20px;
+    color: #fefefe;
+    animation: titleAnimation 2s ease-in-out infinite;
+    transition: color 0.3s ease-in-out;
+}
+
+.title:hover {
+    color: #000000;
+}
+
+@keyframes titleAnimation {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.container {
+    width: 100%;
+    padding: 10px; /* Aumenta il padding per dispositivi mobili */
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: #5d718f;
+    box-shadow: 0px 0px 10px 5px black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.txtCont {
+    display: flex;
+    font-family: fantasy;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.IMG {
+    width: 100%;
+    height: auto; /* Imposta l'altezza dell'immagine in modo che si adatti automaticamente alla larghezza */
+    max-width: 100%; /* Garantisce che l'immagine non superi mai la larghezza del contenitore */
+    margin-top: 20px;
+}
+
+.presenza {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: #fff; /* Cambia il colore di sfondo per maggiore contrasto */
+    margin-top: 20px;
+}
+
+#home:hover {
+    color: #fff;
+}
+
+#btnCollegio {
+    display: block; /* Modifica il display a block per adattarsi meglio ai dispositivi mobili */
+    width: 80%; /* Riduci la larghezza del bottone per dispositivi mobili */
+    max-width: 300px; /* Limita la larghezza massima del bottone per schermi più piccoli */
+    padding: 20px; /* Riduci il padding per dispositivi mobili */
+    font-size: 24px; /* Riduci la dimensione del testo del bottone per dispositivi mobili */
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    margin: 20px 0; /* Aggiusta il margine per dispositivi mobili */
+    text-decoration: none; /* Rimuovi sottolineatura */
+}
+
+/* Stile per l'effetto hover */
+#btnCollegio:hover {
+    background-color: #0056b3;
+}
+
+/* Media query per dispositivi con larghezza massima di 767px (telefono) */
+@media (max-width: 767px) {
+    .title {
+        font-size: 36px; /* Riduci ulteriormente la dimensione del titolo per dispositivi mobili */
+    }
+
+    .container {
+        height: auto; /* Imposta l'altezza automatica per adattarsi ai contenuti */
+    }
+
+    .presenza {
+        height: auto; /* Imposta l'altezza automatica per adattarsi ai contenuti */
+    }
+}

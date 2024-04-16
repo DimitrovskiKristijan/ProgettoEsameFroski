@@ -1,15 +1,18 @@
-body{
+/* Stili di base */
+body {
     background-color: #0e4193;
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif; /* Utilizza una famiglia di font più standard per una migliore leggibilità */
 }
-.title{
-    font-size: 80px;
+
+.title {
+    font-size: 48px; /* Riduci la dimensione del titolo per dispositivi mobili */
     font-family: fantasy;
-    animation: titleAnimation 2s ease-in-out infinite;
     text-align: center;
-    margin-top: 50px;
+    margin-top: 20px;
     color: #fefefe;
+    animation: titleAnimation 2s ease-in-out infinite;
     transition: color 0.3s ease-in-out;
 }
 
@@ -29,15 +32,42 @@ body{
     }
 }
 
-
-.container{
-    align-items: center;
-    width: 100%;
-    padding: 5px;
+.container {
+    width: 90%; /* Utilizza una larghezza percentuale per adattarsi a schermi di diverse dimensioni */
+    max-width: 800px; /* Imposta una larghezza massima per limitare la larghezza su schermi molto larghi */
+    padding: 20px;
     border: 2px solid black;
-    height: 100vh;
     border-radius: 10px;
-    border-color: #fff;
-    border-width: 2px;
+    background-color: #5d718f;
+    box-shadow: 0px 0px 10px 5px black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Allinea verticalmente al centro */
+    align-items: center; /* Allinea orizzontalmente al centro */
+}
 
+.txtCont {
+    font-family: fantasy;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.IMG {
+    width: 100%;
+    height: auto; /* Imposta l'altezza dell'immagine in modo che si adatti automaticamente alla larghezza */
+    max-width: 100%; /* Garantisce che l'immagine non superi mai la larghezza del contenitore */
+    margin-top: 20px;
+}
+
+/* Media query per dispositivi con larghezza massima di 767px (telefono) */
+@media (max-width: 767px) {
+    .title {
+        font-size: 36px; /* Riduci ulteriormente la dimensione del titolo per dispositivi mobili */
+    }
+
+    .container {
+        width: 90%; /* Utilizza una larghezza percentuale per adattarsi a schermi più piccoli */
+    }
 }
