@@ -1,5 +1,7 @@
+"use strict";
+
 window.onload = async () => {
-  /* INIZIALIZZA LA LIBRERIA */
+  /* INIZIALIZZA LA LIBRERIA PARTE GOOGLE */
   google.accounts.id.initialize({
     client_id:
       "603005178582-2k9tkuq4ag5lde21ta8o5bl36grdkfhn.apps.googleusercontent.com",
@@ -10,6 +12,42 @@ window.onload = async () => {
     size: "large",
   });
   google.accounts.id.prompt();
+
+  // Esempio di chiamata GET
+
+  let risposta = await fetch("/index.php?action=init"); // metto il servizio che mi in teressa per contattare da client
+
+  let testo = await risposta.json();
+  console.log(testo);
+
+  let risposta2 = await fetch("/index.php?action=getCollegi"); // metto il servizio che mi in teressa per contattare da client
+
+  let testo2 = await risposta2.json();
+  console.log(testo2);
+
+  /**
+   * PARTE AGGIUNTA , CHIAMATA IN POST
+   */
+
+  // Definisci i dati da inviare nel corpo della richiesta
+  let dati = {
+    parametro: valoreDelParametro,
+  };
+
+  // Opzioni per la richiesta
+  let opzioni = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", // Specifica che il corpo della richiesta è in formato JSON
+    },
+    body: JSON.stringify(dati), // Trasforma i dati in formato JSON per il corpo della richiesta
+  };
+
+  // Effettua la chiamata POST
+  let risposta3 = await fetch("/index.php?action=inserisciCollegio", opzioni);
+
+  let testo3 = await risposta3.json();
+  console.log(testo3);
 };
 
 function handleCredentialResponse(data) {
