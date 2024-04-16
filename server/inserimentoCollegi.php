@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['parametro'])) {
     $hostname = 'localhost';
     $username = 'root'; // Cambia con le tue credenziali
     $password = ''; 
-    $database = 'collegiumPres';
+    $database = 'collegiumpress';
 
     $con = new mysqli($hostname, $username, $password, $database);
 

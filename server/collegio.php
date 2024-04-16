@@ -2,7 +2,7 @@
 $hostname = 'localhost';
 $username = 'root'; //chiedi come fare ad avere il tuo
 $password = '';
-$database = 'collegiumPres';
+$database = 'collegiumpress';
 
 // Connessione al database
 $con = new mysqli($hostname, $username, $password, $database);

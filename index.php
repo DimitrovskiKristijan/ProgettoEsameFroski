@@ -16,6 +16,10 @@
       require_once "server/inserimentoCollegi.php";
     break;
 
+    case "controlloUtente":
+      require_once "server/controlloUtente.php";   
+    break;
+
     default:
         header("location: client/Home/login.html");
      break;

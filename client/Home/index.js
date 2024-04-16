@@ -25,33 +25,49 @@ window.onload = async () => {
   let testo2 = await risposta2.json();
   console.log(testo2);
 
-  /**
-   * PARTE AGGIUNTA , CHIAMATA IN POST
-   */
+ 
+};
 
-  // Definisci i dati da inviare nel corpo della richiesta
-  let dati = {
-    parametro: valoreDelParametro,
-  };
+async function handleCredentialResponse(data) {
+  console.log(parseJwt(data.credential));
 
-  // Opzioni per la richiesta
+  let datiDaGoogle = parseJwt(data.credential)
+
+  let nome = datiDaGoogle.family_name;
+  let cognome = datiDaGoogle.given_name;
+  let email = datiDaGoogle.email;
+
+  // Output dei dati
+  console.log("Nome:", nome);
+  console.log("Cognome:", cognome);
+  console.log("Email:", email);
+
+  let objDati = {
+
+    nome: nome,
+    cognome: cognome,
+    mail: email
+
+  } 
+
+  console.log(objDati);
+
+
   let opzioni = {
     method: "POST",
     headers: {
       "Content-Type": "application/json", // Specifica che il corpo della richiesta è in formato JSON
     },
-    body: JSON.stringify(dati), // Trasforma i dati in formato JSON per il corpo della richiesta
+    body: JSON.stringify(objDati), // Trasforma i dati in formato JSON per il corpo della richiesta
   };
 
   // Effettua la chiamata POST
-  let risposta3 = await fetch("/index.php?action=inserisciCollegio", opzioni);
+  let risposta3 = await fetch("/index.php?action=controlloUtente", opzioni);
 
   let testo3 = await risposta3.json();
   console.log(testo3);
-};
 
-function handleCredentialResponse(data) {
-  console.log(parseJwt(data.credential));
+
   /*
   const { credential } = data;
   if (credential) {
