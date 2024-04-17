@@ -13,6 +13,8 @@ window.onload = async () => {
   });
   google.accounts.id.prompt();
 
+  //INIZIALIZZO VARIABILI
+
   // Esempio di chiamata GET
 
   let risposta = await fetch("/index.php?action=init"); // metto il servizio che mi in teressa per contattare da client
@@ -24,14 +26,12 @@ window.onload = async () => {
 
   let testo2 = await risposta2.json();
   console.log(testo2);
-
- 
 };
 
 async function handleCredentialResponse(data) {
   console.log(parseJwt(data.credential));
 
-  let datiDaGoogle = parseJwt(data.credential)
+  let datiDaGoogle = parseJwt(data.credential);
 
   let nome = datiDaGoogle.family_name;
   let cognome = datiDaGoogle.given_name;
@@ -43,15 +43,12 @@ async function handleCredentialResponse(data) {
   console.log("Email:", email);
 
   let objDati = {
-
     nome: nome,
     cognome: cognome,
-    mail: email
-
-  } 
+    mail: email,
+  };
 
   console.log(objDati);
-
 
   let opzioni = {
     method: "POST",
@@ -67,15 +64,34 @@ async function handleCredentialResponse(data) {
   let testo3 = await risposta3.json();
   console.log(testo3);
 
+  // Verifica il ruolo dell'utente dalla risposta JSON
+  if (testo3.livello) {
+    let ruoli = testo3.livello; // Array dei ruoli dell'utente
 
-  /*
-  const { credential } = data;
-  if (credential) {
-    // Invia il token di autenticazione a PHP per il login
-    const idToken = credential;
-    loginWithGoogle(idToken);
+    // Effettua il reindirizzamento in base ai ruoli
+    for (let ruolo of ruoli) {
+      switch (ruolo) {
+        case "amministratore":
+          window.location.href = "../Amministratore/index.html";
+          console.log("sei un amministratore");
+          return;
+        case "docente":
+          window.location.href = "../NonAmministratore/nonAmm.html";
+          console.log("sei un docente");
+          return;
+        case "non amministratore":
+          window.location.href = "../NonAmministratore/nonAmm.html";
+          console.log("sei un non amministratore");
+          return;
+        default:
+          // Ruolo non riconosciuto, gestisci di conseguenza
+          console.error("Ruolo non riconosciuto:", ruolo);
+          break;
+      }
+    }
+  } else {
+    console.error("Ruolo non presente nella risposta JSON");
   }
-  */
 }
 
 function parseJwt(token) {
@@ -94,27 +110,10 @@ function parseJwt(token) {
 }
 
 /*
-
-// Funzione per eseguire il login con Google
-function loginWithGoogle(idToken) {
-  // Invia il token di autenticazione a PHP tramite fetch o XMLHttpRequest
-  const formData = new FormData();
-  formData.append("id_token", idToken);
-
-  fetch("login.php", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => {
-      if (response.ok) {
-        // Redirect alla dashboard dopo il login
-        window.location.href = "dashboard.php";
-      } else {
-        console.error("Errore durante il login con Google");
-      }
-    })
-    .catch((error) => {
-      console.error("Errore di rete:", error);
-    });
+function signOut() {
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
+  });
 }
 */

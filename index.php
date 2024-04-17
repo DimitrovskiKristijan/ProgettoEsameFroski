@@ -20,6 +20,10 @@
       require_once "server/controlloUtente.php";   
     break;
 
+    case "logout":
+      require_once "server/logout.php";   
+    break;
+
     default:
         header("location: client/Home/login.html");
      break;

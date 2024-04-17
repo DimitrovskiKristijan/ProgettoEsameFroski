@@ -13,7 +13,7 @@ if ($con->connect_error) {
 }
 
 // Query per selezionare tutti i dati dalla tabella collegio
-$query = "SELECT * FROM collegio";
+$query = "SELECT * FROM collegi";
 $result = $con->query($query);
 
 // Verifica se la query ha prodotto dei risultati

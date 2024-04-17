@@ -1,13 +1,11 @@
-"use strict"
+"use strict";
+window.onload = async () => {
+  console.log("Sei nel Reparto Amministratore!!");
+  document.getElementById("btnLogout").addEventListener("click", logout);
+};
 
-
-
-
-
-async function inserisciCollegio(){
-
-
-     /**
+async function inserisciCollegio() {
+  /**
    * PARTE AGGIUNTA , CHIAMATA IN POST
    */
 
@@ -30,4 +28,26 @@ async function inserisciCollegio(){
 
   let testo3 = await risposta3.json();
   console.log(testo3);
+}
+
+async function logout() {
+  try {
+    console.log("click");
+    let response = await fetch("/index.php?action=logout.php", {
+      method: "POST",
+    });
+
+    if (response.ok) {
+      console.log("Logged out successfully");
+      window.location.href = "/index.php";
+    } else {
+      console.error("Logout failed with status:", response.status);
+    }
+
+    // Leggi la risposta come testo
+    let textResponse = await response.text();
+    console.log("Server response:", textResponse);
+  } catch (error) {
+    console.error("An error occurred during logout:", error);
+  }
 }

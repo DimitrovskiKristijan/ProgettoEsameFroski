@@ -43,7 +43,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 while ($vet = $ris->fetch_assoc()) {
                     array_push($jObj->livello, $vet["ruolo"]);
                 }
-
+  
+                  // Determina la pagina da reindirizzare in base al ruolo
+                  
+                  
+                    if (in_array("amministratore", $jObj->livello)) {
+                        $jObj->redirect = "client/Amministratore/index.html";
+                    } else if (in_array("docente", $jObj->livello)) {
+                        $jObj->redirect = "client/NonAmministratore/nonAmm.html";    
+                    }
+                 else if (in_array("non amministratore", $jObj->livello)) {
+                    $jObj->redirect = "client/NonAmministratore/nonAmm.html";    
+                }
+                    
                 // Prepara una risposta con codice 0 e descrizione "Utente Trovato"
                 $jObj = preparaRisp(0, "Utente Trovato", $jObj);
             } else {
@@ -58,16 +70,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Chiudi la connessione al database
         $conn->close();
 
-        // Restituisci la risposta in formato JSON
+        // Restituisco la risposta in formato JSON
         echo json_encode($jObj);
     } else {
-        // Se i dati JSON non sono stati ricevuti correttamente, restituisci un messaggio di errore
+        // Se i dati JSON non sono stati ricevuti correttamente, restituisco un messaggio di errore
         echo json_encode(array('error' => 'Dati mancanti o non validi'));
     }
 } else {
-    // Se la richiesta non è una richiesta POST, restituisci un messaggio di errore
+    // Se la richiesta non è una richiesta POST, restituisco un messaggio di errore
     echo json_encode(array('error' => 'Metodo di richiesta non consentito'));
 }
+
 
 // Funzione per preparare una risposta JSON standardizzata
 function preparaRisp($cod, $desc, $jObj = null) {
@@ -79,3 +92,4 @@ function preparaRisp($cod, $desc, $jObj = null) {
     return $jObj;
 }
 ?>
+

@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['parametro'])) {
         die("Connessione al database fallita: " . $con->connect_error);
     }
    
-    $query = "INSERT INTO collegio (nome_colonna) VALUES ('$parametro')";
+    $query = "INSERT INTO collegi (nome_colonna) VALUES ('$parametro')";
     if ($con->query($query) === TRUE) {
         echo json_encode(array('success' => 'Nuova riga inserita con successo'));
     } else {

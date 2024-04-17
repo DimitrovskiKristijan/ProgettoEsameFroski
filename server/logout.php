@@ -9,6 +9,6 @@ session_unset();
 session_destroy();
 
 // Reindirizza l'utente alla pagina di login
-header('Location: login.html');
+header('Location: ../client/Amministratore/login.html');
 exit;
 ?>
