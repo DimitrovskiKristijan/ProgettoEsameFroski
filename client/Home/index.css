@@ -7,12 +7,12 @@ body {
 }
 
 .title {
-    font-size: 48px; /* Riduci la dimensione del titolo per dispositivi mobili */
+    font-size: 80px; /* Riduci la dimensione del titolo per dispositivi mobili */
     font-family: fantasy;
     text-align: center;
     margin-top: 20px;
     color: #fefefe;
-    animation: titleAnimation 2s ease-in-out infinite;
+    animation: titleAnimation 4s ease-in-out infinite;
     transition: color 0.3s ease-in-out;
 }
 

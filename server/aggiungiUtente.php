@@ -4,10 +4,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $data = json_decode(file_get_contents("php://input"), true);
 
     // Verifica se i dati JSON sono stati ricevuti correttamente
-    if ($data !== null && isset($data['nome']) && isset($data['cognome'])) {
-        // Estrai il nome e il cognome dall'oggetto $data
+    if ($data !== null && isset($data['nome']) && isset($data['cognome']) && isset($data['email'])) {
+        // Estrai il nome, il cognome e l'email dall'oggetto $data
         $nome = $data['nome'];
         $cognome = $data['cognome'];
+        $email = $data['email'];
 
         // Parametri di connessione al database
         $hostname = 'localhost';
@@ -22,6 +23,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($conn->connect_error) {
             die("Connessione al database fallita: " . $conn->connect_error);
         }
+
+        // Verifica se l'email contiene "@vallauri.edu"
+    if (strpos($email, '@vallauri.edu') === false) {
+        // L'email non contiene "@vallauri.edu", quindi aggiungi l'utente al database
+        $stmt = $conn->prepare("INSERT INTO utenti (nome, cognome, email, ruolo) VALUES (?, ?, ?, ?)");
+        $ruolo = 'docente esterno';
+        $stmt->bind_param("ssss", $nome, $cognome, $email, $ruolo);
+        $stmt->execute();
+
+        // Verifica se l'utente è stato aggiunto con successo
+        if ($conn->affected_rows > 0) {
+            // L'utente è stato aggiunto con successo, quindi prepara una risposta di successo
+            $jObj = preparaRisp(0, "Utente aggiunto con successo");
+        } else {
+            // C'è stato un errore nell'aggiunta dell'utente, quindi prepara una risposta di errore
+            $jObj = preparaRisp(-1, "Errore nell'aggiunta dell'utente");
+        }
+    }
 
         // Prepara la query SQL per selezionare il ruolo dell'utente con il nome e il cognome specificati
         $query = "SELECT ruolo FROM utenti WHERE nome = '$nome' AND cognome = '$cognome'";
@@ -43,45 +62,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 while ($vet = $ris->fetch_assoc()) {
                     array_push($jObj->livello, $vet["ruolo"]);
                 }
-  
-                  // Determina la pagina da reindirizzare in base al ruolo
-                  
-                  
-                  /*
-                    if (in_array("amministratore", $jObj->livello)) {
-                        $jObj->redirect = "client/Amministratore/index.html";
-                    } else if (in_array("docente", $jObj->livello)) {
-                        $jObj->redirect = "client/NonAmministratore/nonAmm.html";    
-                    }
-                 else if (in_array("non amministratore", $jObj->livello)) {
-                    $jObj->redirect = "client/NonAmministratore/nonAmm.html";    
-                }
-                    */
-                // Prepara una risposta con codice 0 e descrizione "Utente Trovato"
-                $jObj = preparaRisp(0, "Utente Trovato", $jObj);
-            } else {
-                // Prepara una risposta con codice -1 e descrizione "Utente Non Trovato"
-                $jObj = preparaRisp(-1, "Utente Non Trovato");
             }
-        } else {
-            // Prepara una risposta con codice -1 e descrizione "Errore nella query"
-            $jObj = preparaRisp(-1, "Errore nella query: " . $conn->error);
         }
-
-        // Chiudi la connessione al database
-        $conn->close();
-
-        // Restituisco la risposta in formato JSON
-        echo json_encode($jObj);
-    } else {
-        // Se i dati JSON non sono stati ricevuti correttamente, restituisco un messaggio di errore
-        echo json_encode(array('error' => 'Dati mancanti o non validi'));
     }
-} else {
-    // Se la richiesta non è una richiesta POST, restituisco un messaggio di errore
-    echo json_encode(array('error' => 'Metodo di richiesta non consentito'));
 }
-
 
 // Funzione per preparare una risposta JSON standardizzata
 function preparaRisp($cod, $desc, $jObj = null) {
@@ -93,4 +77,3 @@ function preparaRisp($cod, $desc, $jObj = null) {
     return $jObj;
 }
 ?>
-

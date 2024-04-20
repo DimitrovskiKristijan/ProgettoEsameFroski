@@ -24,5 +24,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['parametro'])) {
 
     $con->close();
 } else {
-    echo json_encode(array('error' => 'Parametro non ricevuto'));
+    echo json_encode(array('error' => 'Parametro non ricevuto'));
 }

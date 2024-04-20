@@ -20,6 +20,14 @@
       require_once "server/controlloUtente.php";   
     break;
 
+    case "aggiungiUtente":
+      require_once "server/aggiungiUtente.php";   
+    break;
+
+    case "login":
+      require_once "server/login.php";   
+    break;
+
     case "logout":
       require_once "server/logout.php";   
     break;
