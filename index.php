@@ -12,7 +12,7 @@
       require_once "server/collegio.php";
     break;
 
-    case "inserisciCollegi":
+    case "inserimentoCollegi":
       require_once "server/inserimentoCollegi.php";
     break;
 
@@ -22,6 +22,10 @@
 
     case "aggiungiUtente":
       require_once "server/aggiungiUtente.php";   
+    break;
+
+    case "registraPresenza":
+      require_once "server/registraPresenza.php";   
     break;
 
     case "login":

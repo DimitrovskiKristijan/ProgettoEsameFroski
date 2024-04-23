@@ -59,15 +59,15 @@ body {
     margin-top: 20px;
 }
 
-.presenza {
+.vecchi {
     width: 100%;
     padding: 10px;
     border: 2px solid black;
     border-radius: 10px;
     background-color: #fff; /* Cambia il colore di sfondo per maggiore contrasto */
     margin-top: 20px;
+    overflow: auto; /* Aggiungi questa riga */
 }
-
 #home:hover {
     color: #fff;
 }

@@ -97,6 +97,10 @@ body {
     background-color: #0056b3;
 }
 
+.custom-font {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  }
+
 /* Media query per dispositivi con larghezza massima di 767px (telefono) */
 @media (max-width: 767px) {
     .title {

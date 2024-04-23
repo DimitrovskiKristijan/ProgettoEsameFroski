@@ -2,6 +2,9 @@
 window.onload = async () => {
   //INIZIALIZZO VARIABILI
   document.getElementById("btnLogout").addEventListener("click", logout);
+  document.getElementById("btnPresenza").addEventListener("click", presenza);
+
+  visualizzaStorico();
 
   //faccio il localStorage per prendere il nome e il cognome
   let nome = localStorage.getItem("nome");
@@ -28,6 +31,35 @@ window.onload = async () => {
   userInfo.innerText = `BENVENUTO [ ${nome}, ${cognome} ]`;
 };
 
+// Funzione per gestire la presenza
+async function presenza() {
+  // Ottieni il nome, cognome ed email dell'utente dal localStorage
+  let nome = localStorage.getItem("nome");
+  let cognome = localStorage.getItem("cognome");
+  let email = localStorage.getItem("email");
+
+  // Invio una richiesta al server per registrare la presenza dell'utente
+  let response = await fetch("/index.php?action=registraPresenza", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ nome: nome, cognome: cognome, email: email }), // Invio il nome, cognome ed email dell'utente al server
+  });
+
+  // Controllo la risposta
+  if (response.ok) {
+    console.log("Presenza registrata con successo");
+  } else {
+    console.error(
+      "Registrazione della presenza fallita con status:",
+      response.status
+    );
+  }
+}
+
+async function visualizzaStorico() {}
+
 // Funzione per gestire il logout
 async function logout() {
   try {
@@ -43,7 +75,7 @@ async function logout() {
       console.error("Logout failed with status:", response.status);
     }
 
-    // Leggi la risposta come testo
+    // Leggo la risposta
     let textResponse = await response.text();
     console.log("Server response:", textResponse);
   } catch (error) {
