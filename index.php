@@ -28,6 +28,14 @@
       require_once "server/registraPresenza.php";   
     break;
 
+    case "ottieniStorico":
+      require_once "server/ottieniStorico.php";   
+    break;
+    
+    case "verificaCollegio":
+      require_once "server/verificaCollegio.php";   
+    break;
+
     case "login":
       require_once "server/login.php";   
     break;

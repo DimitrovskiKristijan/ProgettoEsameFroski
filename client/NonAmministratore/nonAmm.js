@@ -47,6 +47,9 @@ async function presenza() {
     body: JSON.stringify({ nome: nome, cognome: cognome, email: email }), // Invio il nome, cognome ed email dell'utente al server
   });
 
+  let data = await response.json();
+
+  if (data.error) alert(data.error);
   // Controllo la risposta
   if (response.ok) {
     console.log("Presenza registrata con successo");
@@ -58,7 +61,29 @@ async function presenza() {
   }
 }
 
-async function visualizzaStorico() {}
+// Funzione per visualizzare lo storico delle presenze
+
+async function visualizzaStorico() {
+  // Ottieni l'email dell'utente dal localStorage
+  let email = localStorage.getItem("email");
+
+  // Invia una richiesta al server per ottenere lo storico delle presenze dell'utente
+  let response = await fetch("/index.php?action=ottieniStorico", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email: email }), // Invia l'email dell'utente al server
+  });
+
+  // Controlla la risposta
+  if (response.ok) {
+    //&& window.location.pathname.endsWith("Storico.html")
+    // Ottieni lo storico delle presenze dal corpo della risposta
+    let storico = await response.json();
+    console.log("Storico delle presenze:", storico);
+  }
+}
 
 // Funzione per gestire il logout
 async function logout() {

@@ -43,7 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if ($result->num_rows > 0) {
                 // L'utente ha già firmato oggi, quindi invia un messaggio di errore
-                die("Hai già firmato per oggi");
+                echo json_encode(['error' => 'Hai già firmato per oggi']);
+        exit();
             } else {
                 // L'utente non ha ancora firmato oggi, quindi registra la sua presenza
                 $stmt = $conn->prepare("INSERT INTO Presenze (ID_Utente, ID_Collegio) VALUES (?, ?)");

@@ -29,7 +29,7 @@ window.onload = async () => {
     .addEventListener("click", inserisciCollegio);
 };
 
-async function mostraModal() {
+async function mostraCollegi() {
   //visualizza il modal
   let creaCollegioModal = new bootstrap.Modal(
     document.getElementById("creaCollegioModal")
@@ -45,19 +45,12 @@ async function mostraModal() {
     });
 
   // Aggiungi un event listener al bottone di invio del form
+  let btnInvia = document.getElementById("btnInvia");
+  btnInvia.disabled = false;
 
   document
     .getElementById("btnInvia")
     .addEventListener("click", inserisciCollegio);
-  /*
-  document
-    .getElementById("btnInvia")
-    .addEventListener("click", async function (event) {
-      console.log("click");
-      event.preventDefault(); // Previene il comportamento di default del form (che sarebbe il refresh della pagina)
-      await inserisciCollegio(); // Chiama la funzione per inviare i dati al server
-    });
-    */
 }
 
 // Funzione per inserire un collegio
@@ -87,6 +80,20 @@ async function inserisciCollegio() {
   dati.append("Data_Collegio", data);
   dati.append("file", file);
 
+  // Verifica se esiste già un collegio con lo stesso titolo, data e file
+  /*
+  let verifica = await fetch("/index.php?action=verificaCollegio", {
+    method: "POST",
+    body: dati,
+  });
+  let esisteGia = await verifica.json();
+  console.log("Esiste già un collegio con questi dati?", esisteGia);
+
+  if (esisteGia) {
+    alert("Un collegio con lo stesso titolo, data e file esiste già.");
+    return; // Interrompe l'esecuzione della funzione
+  }
+*/
   // Logga l'oggetto dati
   console.log(dati);
   // Opzioni per la richiesta
@@ -102,9 +109,15 @@ async function inserisciCollegio() {
   if (collegio.ok && collegio.headers.get("Content-Length") > 0) {
     let busta = await collegio.json();
     console.log(busta);
+    alert("Collegio creato con successo"); // Aggiungi l'alert qui
+    // Disabilita il bottone di invio
+    let btnInvia = document.getElementById("btnInvia");
+    btnInvia.disabled = true;
   } else {
     console.log("No JSON to parse or response not OK");
   }
+  // Riabilita il bottone di invio
+  //btnInvia.disabled = false;
 }
 
 // Funzione per ottenere e visualizzare i collegi
@@ -149,6 +162,31 @@ async function visualizzaCollegi() {
   // Aggiungi la tabella al div
   let divVecchi = document.querySelector(".vecchi");
   divVecchi.appendChild(table);
+}
+
+//Funzione per mostrare le presenze
+async function mostraPresenze() {
+  //visualizza il modal
+  let creaCollegioModal = new bootstrap.Modal(
+    document.getElementById("creaPresenzeModal")
+  );
+  //mostra il modal e azzera i campi
+  creaCollegioModal.show();
+  document
+    .getElementById("creaPresenzeModal")
+    .addEventListener("hidden.bs.modal", function (event) {
+      // Trova tutti gli elementi input nel modal e li azzera
+      let inputs = this.querySelectorAll("input");
+      inputs.forEach((input) => (input.value = ""));
+    });
+
+  // Aggiungi un event listener al bottone di invio del form
+  let btnInvia = document.getElementById("btnInvia");
+  btnInvia.disabled = false;
+
+  document
+    .getElementById("btnInvia")
+    .addEventListener("click", inserisciCollegio);
 }
 
 // Funzione per gestire il logout

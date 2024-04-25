@@ -52,7 +52,7 @@
             <!-- Bottoni sotto la sezione Header -->
             <div class="row mt-3">
                 <div class="col-6"> <!-- Allinea a sinistra -->
-                    <button type="button" class="btn btn-primary btn-block" id="btnCreaCollegio" onclick="mostraModal()" >Crea Collegio</button>
+                    <button type="button" class="btn btn-primary btn-block" id="btnCreaCollegio" onclick="mostraCollegi()" >Crea Collegio</button>
                 </div>
                
 
@@ -89,7 +89,23 @@
                     </div>
                   </div>
                 <div class="col-6"> <!-- Allinea a destra -->
-                    <button type="button" class="btn btn-danger btn-block">Visualizza Presenze</button>
+
+                    <button type="button" class="btn btn-danger btn-block" onclick="mostraPresenze()">Visualizza Presenze</button>
+                    
+                    <div class="modal" tabindex="-1" id="creaPresenzeModal">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Visualizzazione presenze</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+
+                          </div>
+                         
+                        </div>
+                      </div>
+                    </div>
                 </div>
             </div>
        </div>
