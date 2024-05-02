@@ -92,6 +92,11 @@ body {
     text-decoration: none; /* Rimuovi sottolineatura */
 }
 
+
+#btnModifica{
+    margin-right: 20%;
+}
+
 /* Stile per l'effetto hover */
 #btnCollegio:hover {
     background-color: #0056b3;

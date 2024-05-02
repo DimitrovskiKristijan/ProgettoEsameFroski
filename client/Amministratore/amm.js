@@ -12,7 +12,7 @@ window.onload = async () => {
   console.log("Nome:" + nome);
 
   let cognome = localStorage.getItem("cognome");
-  console.log("COgnome:" + cognome);
+  console.log("Cognome:" + cognome);
 
   let email = localStorage.getItem("email");
   console.log("Email: " + email);
@@ -59,6 +59,8 @@ async function inserisciCollegio() {
   let form = document.getElementById("FormId");
   // Ottieni i valori degli input
   let titolo = form.elements.title.value;
+  let Ora_Inizio = form.elements.Ora_Inizio.value;
+  let Ora_Fine = form.elements.Ora_Fine.value;
   let data = form.elements.date.value;
   let file = form.elements.file.files[0]; // Questo è un file, quindi usiamo .files[0] per ottenere il primo file
 
@@ -77,6 +79,8 @@ async function inserisciCollegio() {
   // Crea un oggetto FormData
   let dati = new FormData();
   dati.append("titolo", titolo);
+  dati.append("Ora_Inizio", Ora_Inizio);
+  dati.append("Ora_Fine", Ora_Fine);
   dati.append("Data_Collegio", data);
   dati.append("file", file);
 
@@ -95,7 +99,12 @@ async function inserisciCollegio() {
   }
 */
   // Logga l'oggetto dati
-  console.log(dati);
+  //console.log(dati);
+
+  for (let [key, value] of dati.entries()) {
+    console.log(key, value);
+  }
+
   // Opzioni per la richiesta
   let opzioni = {
     method: "POST",
@@ -156,7 +165,12 @@ async function visualizzaCollegi() {
       <td>${collegio.Ora_Fine}</td>
       <td>${collegio.File_CSV}</td>
     `;
-    tbody.appendChild(row);
+   // Aggiungi l'evento click alla riga
+   row.addEventListener("click", function() {
+    // Chiamata alla funzione visDatiCollegio2 con i valori della riga corrente
+    visDatiCollegio2(collegio.Titolo, collegio.Data_Collegio, collegio.Ora_Inizio, collegio.Ora_Fine);
+});
+tbody.appendChild(row);
   });
 
   // Aggiungi la tabella al div
@@ -217,4 +231,55 @@ async function logout() {
   } catch (error) {
     console.error("An error occurred during logout:", error);
   }
+}
+
+/****************************************************************************************************************************** */
+
+function visDatiCollegio2(titolo, dataCollegio, oraInizio, oraFine) {
+  
+  console.log("Titolo:", titolo);
+  console.log("Data del collegio:", dataCollegio);
+  console.log("Ora di inizio:", oraInizio);
+  console.log("Ora di Fine:", oraFine);
+
+let ModificaCollegioModal = new bootstrap.Modal(
+  document.getElementById("ModificaCollegioModal")
+);
+//mostra il modal e azzera i campi
+ModificaCollegioModal.show();
+
+
+
+
+document.getElementById("btnModifica").addEventListener("click", async function() {
+  console.log("Modifica cliccata");
+  
+  let objDati = {
+    titolo: titolo,
+    dataCollegio: dataCollegio,
+    oraInizio: oraInizio,
+    oraFine: oraFine,
+  };
+
+  console.log(objDati);
+
+  let opzioni = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", // Specifica che il corpo della richiesta è in formato JSON
+    },
+    body: JSON.stringify(objDati), // Trasforma i dati in formato JSON per il corpo della richiesta
+  };
+
+  // CHIAMATA PER IL CONTROLLO DEL RUOLO UTENTE
+  let risposta3 = await fetch("/index.php?action=modificaCollegio", opzioni);
+
+  let testo3 = await risposta3.json();
+  console.log(testo3);
+
+
+
+});
+
+  
 }

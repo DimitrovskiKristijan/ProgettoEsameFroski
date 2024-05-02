@@ -36,6 +36,10 @@
       require_once "server/verificaCollegio.php";   
     break;
 
+    case "modificaCollegio":
+      require_once "server/modificaCollegio.php";   
+    break;
+
     case "login":
       require_once "server/login.php";   
     break;

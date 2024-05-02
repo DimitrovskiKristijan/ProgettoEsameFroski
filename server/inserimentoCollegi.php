@@ -3,6 +3,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" ) {
     // Leggi i dati da $_POST
     $titolo = $_POST['titolo'];
     $Data_Collegio = $_POST['Data_Collegio'];
+    $Ora_Inizio = $_POST['Ora_Inizio'];
+    $Ora_Fine = $_POST['Ora_Fine'];
 
     // Controlla se è stato inviato un file
     if (isset($_FILES['file'])) {
@@ -32,14 +34,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" ) {
     }
 
     // Imposta ora_inizio al momento attuale
-    $ora_inizio = date('Y-m-d H:i:s');
+    //$ora_inizio = date('Y-m-d H:i:s');
 
     // Prepara la query SQL
-    $query = "INSERT INTO collegi (titolo, ora_inizio, File_CSV, Data_Collegio) VALUES (?, ?, ?, ?)";
+    $query = "INSERT INTO collegi (titolo, ora_Inizio, ora_Fine, File_CSV, Data_Collegio) VALUES (?, ?, ?, ?, ?)";
     $stmt = $con->prepare($query);
 
     // Associa i valori ai parametri della query
-    $stmt->bind_param("ssss", $titolo, $ora_inizio, $File_CSV, $Data_Collegio);
+    $stmt->bind_param("sssss", $titolo, $Ora_Inizio, $Ora_Fine, $File_CSV, $Data_Collegio);
 
     // Esegui la query
     if ($stmt->execute()) {

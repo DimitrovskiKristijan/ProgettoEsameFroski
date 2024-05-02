@@ -71,6 +71,14 @@
                               <input type="text" class="form-control" id="title" placeholder="Inserisci il titolo" required>
                           </div>
                           <div class="mb-3">
+                            <label for="Ora_Inizio" class="form-label">Ora di inizio</label>
+                            <input type="time" class="form-control" id="Ora_Inizio" required>
+                         </div>
+                         <div class="mb-3">
+                            <label for="Ora_Fine" class="form-label">Ora di Fine</label>
+                            <input type="time" class="form-control" id="Ora_Fine" required>
+                        </div>
+                          <div class="mb-3">
                               <label for="date" class="form-label">Data</label>
                               <input type="date" class="form-control" id="date" required>
                           </div>
@@ -88,9 +96,40 @@
                       </div>
                     </div>
                   </div>
+
+
+<!------------------------------------------------------------------------------------------------------->
+
+<div class="modal" tabindex="-1" id="ModificaCollegioModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifica o visualizza presenze Collegio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <!-- Qui puoi inserire il form per creare un collegio -->
+      <form id="FormId" enctype="multipart/form-data">
+        <div class="mb-3">
+          <button type="button" class="btn btn-warning" id="btnModifica">Modifica</button>
+          <button type="button" class="btn btn-danger btn-block" onclick="mostraPresenze()">Visualizza Presenze</button>
+        </div>
+    </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--------------------------------------------------------------------------------------------------------->
+
                 <div class="col-6"> <!-- Allinea a destra -->
 
-                    <button type="button" class="btn btn-danger btn-block" onclick="mostraPresenze()">Visualizza Presenze</button>
+                    
                     
                     <div class="modal" tabindex="-1" id="creaPresenzeModal">
                       <div class="modal-dialog">
