@@ -6,50 +6,48 @@ body {
     font-family: Arial, sans-serif; /* Utilizza una famiglia di font più standard per una migliore leggibilità */
 }
 
+#NAV {
+    background-color: #3774aa;
+}
 .title {
-    font-size: 80px; /* Riduci la dimensione del titolo per dispositivi mobili */
-    font-family: fantasy;
+    font-size: 80px; /* Dimensione del titolo per desktop */
+    font-family: 'Impact', fantasy;
     text-align: center;
     margin-top: 20px;
-    color: #fefefe;
-    animation: titleAnimation 4s ease-in-out infinite;
-    transition: color 0.6s ease-in-out;
+    color: #151515;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
 }
 
 .title:hover {
     color: #000000;
-}
-
-@keyframes titleAnimation {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-    }
+    text-shadow: 6px 6px 8px rgba(0, 0, 0, 0.5);
 }
 
 .container {
-    width: 100%;
-    padding: 10px; /* Aumenta il padding per dispositivi mobili */
+    width: 90%; /* Utilizza una larghezza percentuale per adattarsi a schermi di diverse dimensioni */
+    max-width: 800px; /* Imposta una larghezza massima per limitare la larghezza su schermi molto larghi */
+    min-width: 300px; /* Imposta una larghezza minima per evitare che il contenitore diventi troppo stretto */
+    margin: auto; /* Centra il contenitore orizzontalmente */
+    padding: 20px;
     border: 2px solid black;
     border-radius: 10px;
-    background-color: #5d718f;
+    background-color: #ffffff;
     box-shadow: 0px 0px 10px 5px black;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center; /* Allinea verticalmente al centro */
+    align-items: center; /* Allinea orizzontalmente al centro */
 }
 
 .txtCont {
-    display: flex;
     font-family: fantasy;
+    display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    color: #000000;
 }
 
 .IMG {

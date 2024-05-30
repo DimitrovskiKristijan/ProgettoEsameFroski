@@ -28,10 +28,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->execute();
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
-
+ 
         if ($user) {
-            // L'utente esiste, quindi ottieni lo storico delle sue presenze
-            $stmt = $conn->prepare("SELECT collegi.Data_Collegio, presenze.DataOra_Registrazione FROM presenze INNER JOIN collegi ON presenze.ID_Collegio = collegi.ID_Collegio WHERE presenze.ID_Utente = ?");
+             $stmt = $conn->prepare("SELECT collegi.Data_Collegio, presenze.DataOra_Registrazione, collegi.Anno_Scolastico FROM presenze INNER JOIN collegi ON presenze.ID_Collegio = collegi.ID_Collegio WHERE presenze.ID_Utente = ?");
             $stmt->bind_param("i", $user['ID_Utente']);
             $stmt->execute();
             $result = $stmt->get_result();

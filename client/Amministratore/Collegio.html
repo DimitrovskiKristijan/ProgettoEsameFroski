@@ -21,8 +21,8 @@
 <body>
   
        <!-- NavBar-->
-       <nav class="navbar navbar-light bg-primary">
-        <div class="container-fluid">
+       <nav class="navbar navbar-light"id="NAV">
+        <div class="container-fluid" >
           <a class="navbar-brand" href="index.html">
             <img src="../../img/Screenshot 2024-03-14 100215.png" alt="" width="70" height="70" class="d-inline-block align-text-top">
             <b id="home">HOME AMMINISTRATORE</b>
@@ -39,11 +39,14 @@
             </div>
 
             <br>
+            
             <div class="row">
                 <div class="col">
                     <h2>TABELLA COLLEGI VECCHI</h2>
                     <br>
                     <div class="vecchi">
+                      <select id="annoScolastico"></select>
+                      <div id="datiFiltrati"></div>
                         
                     </div>
                 </div>
@@ -54,7 +57,7 @@
                 <div class="col-6"> <!-- Allinea a sinistra -->
                     <button type="button" class="btn btn-primary btn-block" id="btnCreaCollegio" onclick="mostraCollegi()" >Crea Collegio</button>
                 </div>
-               
+                
 
                 <div class="modal" tabindex="-1" id="creaCollegioModal">
                     <div class="modal-dialog">
@@ -146,10 +149,50 @@
                       </div>
                     </div>
                 </div>
-            </div>
+
+<!----------------------------------------------------------------------------------------------------->
+
+<div class="modal" tabindex="-1" id="Modifica">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifica Collegio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <!-- Qui puoi inserire il form per creare un collegio -->
+      <form id="FormModifica" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="titleModifica" class="form-label">Titolo</label>
+            <input type="text" class="form-control" id="titleModifica" placeholder="Inserisci il titolo" required>
+        </div>
+        <div class="mb-3">
+          <label for="Ora_InizioModifica" class="form-label">Ora di inizio</label>
+          <input type="time" class="form-control" id="Ora_InizioModifica" required>
        </div>
-    
+       <div class="mb-3">
+          <label for="Ora_FineModifica" class="form-label">Ora di Fine</label>
+          <input type="time" class="form-control" id="Ora_FineModifica" required>
+      </div>
+        <div class="mb-3">
+            <label for="dateModifica" class="form-label">Data</label>
+            <input type="date" class="form-control" id="dateModifica" required>
+        </div>
+        <div class="mb-3">
+            <label for="fileModifica" class="form-label">File</label>
+            <input type="file" class="form-control" id="fileModifica" required>
+        </div>
+    </form>
 
-
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Chiudi</button>
+        <button type="button" class="btn btn-danger" id="btnEseguiModifica">Modifica</button>
+      </div>
+    </div>
+  </div>
+</div>
+      </div>  
+         </div>
 </body>
 </html>
