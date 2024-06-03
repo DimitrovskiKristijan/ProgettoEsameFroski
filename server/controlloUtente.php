@@ -4,10 +4,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $data = json_decode(file_get_contents("php://input"), true);
 
     // Verifica se i dati JSON sono stati ricevuti correttamente
-    if ($data !== null && isset($data['nome']) && isset($data['cognome'])) {
+    if ($data !== null && isset($data['nomeCognome'])) {
         // Estrai il nome e il cognome dall'oggetto $data
-        $nome = $data['nome'];
-        $cognome = $data['cognome'];
+        $nomeCognome = $data['nomeCognome'];
 
         // Parametri di connessione al database
         $hostname = 'localhost';
@@ -24,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         // Prepara la query SQL per selezionare il ruolo dell'utente con il nome e il cognome specificati
-        $query = "SELECT ruolo FROM utenti WHERE nome = '$nome' AND cognome = '$cognome'";
+        $query = "SELECT ruolo FROM utenti WHERE nomeCognome = '$nomeCognome'";
 
         // Esegui la query SQL
         $ris = $conn->query($query);
@@ -43,20 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 while ($vet = $ris->fetch_assoc()) {
                     array_push($jObj->livello, $vet["ruolo"]);
                 }
-  
-                  // Determina la pagina da reindirizzare in base al ruolo
-                  
-                  
-                  /*
-                    if (in_array("amministratore", $jObj->livello)) {
-                        $jObj->redirect = "client/Amministratore/index.html";
-                    } else if (in_array("docente", $jObj->livello)) {
-                        $jObj->redirect = "client/NonAmministratore/nonAmm.html";    
-                    }
-                 else if (in_array("non amministratore", $jObj->livello)) {
-                    $jObj->redirect = "client/NonAmministratore/nonAmm.html";    
-                }
-                    */
                 // Prepara una risposta con codice 0 e descrizione "Utente Trovato"
                 $jObj = preparaRisp(0, "Utente Trovato", $jObj);
             } else {

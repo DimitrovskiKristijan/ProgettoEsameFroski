@@ -56,7 +56,7 @@ if ($File_CSV) {
          fgetcsv($handle);
 
         // Prepara la query per inserire i dati dal CSV nella tabella presenze
-        $query_csv = "INSERT INTO docenti (NomeCognome, Mail, DataOra_Registrazione, DataOra_Uscita, ID_Collegio) VALUES (?, ?, ?, ?, ?)";
+        $query_csv = "INSERT INTO utenti (NomeCognome, Email, ID_Collegio) VALUES (?, ?, ?)";
         $stmt_csv = $con->prepare($query_csv);
 
         // Leggi ogni riga del file CSV e inserisci i dati nel database
@@ -69,10 +69,8 @@ if ($File_CSV) {
             // Associa i valori letti dal CSV ai parametri della query
             $NomeCognome = $data[1]; // Prendi solo la colonna "Cognome e nome"
             $Mail = ''; // Imposta un valore predefinito per Mail
-            $DataOra_Registrazione = date('Y-m-d H:i:s'); // Imposta un valore predefinito per DataOra_Registrazione
-            $DataOra_Uscita = date('Y-m-d H:i:s'); // Imposta un valore predefinito per DataOra_Uscita
             
-            $stmt_csv->bind_param("sssii", $NomeCognome, $Mail, $DataOra_Registrazione, $DataOra_Uscita, $collegio_id);
+            $stmt_csv->bind_param("ssi", $NomeCognome, $Mail, $collegio_id);
             
             // Esegui la query
             if (!$stmt_csv->execute()) {

@@ -26,6 +26,12 @@ window.onload = async () => {
 
   let testo2 = await risposta2.json();
   console.log(testo2);
+
+  // CHIAMATA PER OTTENERE I COLLEGI
+  let risposta3 = await fetch("/index.php?action=getDocenti"); // metto il servizio che mi in teressa per contattare da client
+
+  let testo3 = await risposta3.json();
+  console.log(testo3);
 };
 
 // Funzione per gestire la risposta del pulsante Google
@@ -35,20 +41,17 @@ async function handleCredentialResponse(data) {
   let datiDaGoogle = parseJwt(data.credential);
 
   // Estrai i dati dall'oggetto
-  let nome = datiDaGoogle.family_name;
-  let cognome = datiDaGoogle.given_name;
+  let nomeCognome = datiDaGoogle.name;
   let email = datiDaGoogle.email;
   let id = datiDaGoogle.sub;
 
   // Output dei dati
-  console.log("Nome:", nome);
-  console.log("Cognome:", cognome);
+  console.log("Nome e Cognome:", nomeCognome);
   console.log("Email:", email);
   console.log("ID:", id);
 
   // Dopo aver ottenuto i dati, salvali nel localStorage
-  localStorage.setItem("nome", nome);
-  localStorage.setItem("cognome", cognome);
+  localStorage.setItem("nome e cognome", nomeCognome);
   localStorage.setItem("email", email);
   localStorage.setItem("id", id);
 
@@ -59,7 +62,7 @@ async function handleCredentialResponse(data) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      nome: nome,
+      nomeCognome: nomeCognome,
       email: email,
     }),
   });
@@ -74,8 +77,7 @@ async function handleCredentialResponse(data) {
 
   // Oggetto con i dati da inviare al server
   let objDati = {
-    nome: nome,
-    cognome: cognome,
+    nomeCognome: nomeCognome,
     mail: email,
     id: datiDaGoogle.sub,
   };
@@ -132,8 +134,7 @@ async function handleCredentialResponse(data) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      nome: nome,
-      cognome: cognome,
+      nomeCognome: nomeCognome,
       email: email,
     }),
   });

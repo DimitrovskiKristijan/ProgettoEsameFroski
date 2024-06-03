@@ -12,6 +12,10 @@
       require_once "server/collegio.php";
     break;
 
+    case "getDocenti":
+      require_once "server/getDocenti.php";
+    break;
+
     case "inserimentoCollegi":
       require_once "server/inserimentoCollegi.php";
     break;
