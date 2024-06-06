@@ -30,12 +30,9 @@ window.onload = async () => {
     document.getElementById("hidePresenza").style.display = "block";
   });
 
-  //faccio il localStorage per prendere il nome e il cognome
-  let nome = localStorage.getItem("nome");
-  console.log("Nome:" + nome);
-
-  let cognome = localStorage.getItem("cognome");
-  console.log("COgnome:" + cognome);
+  // Recupera NomeCognome dal localStorage
+  let nomeCognome = localStorage.getItem("nome e cognome");
+  console.log("Nome e Cognome: " + nomeCognome);
 
   let email = localStorage.getItem("email");
   console.log("Email: " + email);
@@ -52,20 +49,49 @@ window.onload = async () => {
 
   // Output dei dati
   let userInfo = document.getElementById("userInfo");
-  userInfo.innerText = `BENVENUTO \n ${nome}, ${cognome} `;
+  userInfo.innerText = `BENVENUTO \n ${nomeCognome} `;
   let userHead = document.getElementById("userHead");
-  userHead.innerText = ` ${nome} ${cognome} `;
+  userHead.innerText = ` ${nomeCognome} `;
 };
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// Funzione per ottenere l'ID_Collegio da un server
+async function getID_Collegio() {
+  let email = localStorage.getItem("email");
+  let response = await fetch("/index.php?action=getID_Collegio", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+    }),
+  });
+
+  let data = await response.json();
+
+  if (data.error) alert(data.error);
+
+  if (response.ok) {
+    return data.ID_Collegio;
+  } else {
+    console.error(
+      "Recupero dell'ID_Collegio fallito con status:",
+      response.status
+    );
+    return null;
+  }
+}
+
 // Funzione per gestire la presenza
 async function presenza() {
+  let ID_Collegio = await getID_Collegio();
   let divToHide = document.getElementById("btnPresenza");
   let divToHide2 = document.querySelector("h3");
   let btnStorico = document.getElementById("btnStorico");
 
-  let nome = localStorage.getItem("nome");
-  let cognome = localStorage.getItem("cognome");
+  let nomeCognome = localStorage.getItem("nome e cognome");
+  console.log("Nome e Cognome: " + nomeCognome);
   let email = localStorage.getItem("email");
 
   // Invio una richiesta al server per registrare la presenza dell'utente
@@ -74,7 +100,11 @@ async function presenza() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ nome: nome, cognome: cognome, email: email }), // Invio il nome, cognome ed email dell'utente al server
+    body: JSON.stringify({
+      nomeCognome: nomeCognome,
+      email: email,
+      ID_Collegio: ID_Collegio,
+    }),
   });
 
   let data = await response.json();
@@ -91,7 +121,6 @@ async function presenza() {
       response.status
     );
   }
-  // Aggiungi una classe CSS che nasconde l'elemento
   divToHide.style.display = "none";
   divToHide2.style.display = "none";
 }
@@ -103,37 +132,6 @@ async function visualizzaStorico() {
 
   let divStorico = document.getElementById("hideStorico");
   divStorico.style.display = "block";
-
-  document
-    .getElementById("annoScolastico")
-    .addEventListener("change", async function () {
-      let annoScolastico = this.value;
-
-      let response = await fetch(
-        "/index.php?action=ottieniDatiPerAnnoScolastico",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ annoScolastico: annoScolastico }), // Invia l'anno scolastico selezionato al server
-        }
-      );
-
-      if (response.ok) {
-        let dati = await response.json();
-        console.log("Dati per l'anno scolastico " + annoScolastico + ":", dati);
-
-        // Aggiorna la tua interfaccia utente con i dati ricevuti
-      } else {
-        console.error(
-          "Ottenimento dei dati per l'anno scolastico fallito con status:",
-          response.status
-        );
-      }
-    });
-  // Ottieni l'email dell'utente dal localStorage
-
   let email = localStorage.getItem("email");
 
   // Invia una richiesta al server per ottenere lo storico delle presenze dell'utente
@@ -206,7 +204,7 @@ async function visualizzaStorico() {
 async function popolaAnniScolastici() {
   try {
     // CHIAMATA PER OTTENERE GLI ANNI SCOLASTICI
-    let risposta2 = await fetch("/index.php?action=getAnno");
+    let risposta2 = await fetch("/index.php?action=getAnnoPresenze");
     let anniScolastici = await risposta2.json();
     console.log(anniScolastici);
 
@@ -243,12 +241,12 @@ async function popolaAnniScolastici() {
 async function filtraDati(annoScolastico) {
   try {
     // Ottieni il riferimento alla tabella e alle righe del corpo
-    let table = document.querySelector(".vecchi table");
+    let table = document.querySelector(".storico table");
     let rows = table.querySelectorAll("tbody tr");
 
     // Mostra/Nascondi le righe in base all'anno scolastico selezionato
     rows.forEach((row) => {
-      let cell = row.querySelector("td:nth-child(1)"); // Assume che l'anno scolastico sia nella prima colonna
+      let cell = row.querySelector("td:nth-child(3)"); // Assume che l'anno scolastico sia nella prima colonna
       if (cell.textContent === annoScolastico || annoScolastico === "") {
         row.style.display = "";
       } else {
@@ -259,7 +257,7 @@ async function filtraDati(annoScolastico) {
     console.error("Si è verificato un errore:", errore);
   }
 }
-// Funzione per gestire il logout
+
 async function logout() {
   try {
     console.log("click");
@@ -269,6 +267,12 @@ async function logout() {
 
     if (response.ok) {
       console.log("Logged out successfully");
+      // Rimuovi i dati dell'utente dal localStorage
+      localStorage.removeItem("nome");
+      localStorage.removeItem("cognome");
+      localStorage.removeItem("email");
+      localStorage.removeItem("id");
+
       window.location.href = "/index.php";
     } else {
       console.error("Logout failed with status:", response.status);

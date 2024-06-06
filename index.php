@@ -44,10 +44,22 @@
       require_once "server/modificaCollegio.php";   
     break;
     
-    case "getAnno":
-      require_once "server/getAnno.php";
+    case "getAnnoCollegi":
+      require_once "server/getAnnoCollegi.php";
     break;
 
+    case "getAnnoPresenze":
+      require_once "server/getAnnoPresenze.php";
+    break;
+
+    case "getID_Collegio":
+      require_once "server/getID_Collegio.php";
+    break;
+
+    case "verificaPresenze":
+      require_once "server/verificaPresenze.php";
+    break;
+    
     case "login":
       require_once "server/login.php";   
     break;

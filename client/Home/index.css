@@ -1,9 +1,8 @@
-/* Stili di base */
 body {
     background-color: #0e4193;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif; /* Utilizza una famiglia di font più standard per una migliore leggibilità */
+    font-family: Arial; 
 }
 
 #NAV {
@@ -11,7 +10,7 @@ body {
 }
 
 .title {
-    font-size: 80px; /* Dimensione del titolo per desktop */
+    font-size: 80px; 
     font-family: 'Impact', fantasy;
     text-align: center;
     margin-top: 20px;
@@ -26,10 +25,10 @@ body {
 }
 
 .container {
-    width: 90%; /* Utilizza una larghezza percentuale per adattarsi a schermi di diverse dimensioni */
-    max-width: 800px; /* Imposta una larghezza massima per limitare la larghezza su schermi molto larghi */
-    min-width: 300px; /* Imposta una larghezza minima per evitare che il contenitore diventi troppo stretto */
-    margin: auto; /* Centra il contenitore orizzontalmente */
+    width: 90%; 
+    max-width: 800px; 
+    min-width: 300px; 
+    margin: auto; 
     padding: 20px;
     border: 2px solid black;
     border-radius: 10px;
@@ -37,8 +36,8 @@ body {
     box-shadow: 0px 0px 10px 5px black;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Allinea verticalmente al centro */
-    align-items: center; /* Allinea orizzontalmente al centro */
+    justify-content: center; 
+    align-items: center;
 }
 
 .txtCont {
@@ -53,29 +52,30 @@ body {
 
 .IMG {
     width: 100%;
-    height: auto; /* Imposta l'altezza dell'immagine in modo che si adatti automaticamente alla larghezza */
-    max-width: 100%; /* Garantisce che l'immagine non superi mai la larghezza del contenitore */
+    height: auto; 
+    max-width: 100%; 
     margin-top: 20px;
 }
 
 /* Media query per dispositivi con larghezza massima di 767px (telefono) */
 @media (max-width: 767px) {
     .title {
-        font-size: 46px; /* Riduci ulteriormente la dimensione del titolo per dispositivi mobili */
+        font-size: 46px;
     }
 
     .container {
-        width: 95%; /* Aumenta leggermente la larghezza percentuale per adattarsi a schermi più piccoli */
-        padding: 10px; /* Riduci il padding per schermi piccoli */
-        box-shadow: 0px 0px 5px 3px black; /* Riduci l'ombra per adattarsi meglio agli schermi più piccoli */
-        margin: auto; /* Assicura che il contenitore sia centrato orizzontalmente */
+        width: 95%; 
+        padding: 10px; 
+        box-shadow: 0px 0px 5px 3px black; 
+        margin: auto;
     }
 
     .IMG {
-        margin-top: 10px; /* Riduci il margine superiore per risparmiare spazio */
+        margin-top: 10px; 
     }
 
     .txtCont {
-        margin-top: 10px; /* Riduci il margine superiore per risparmiare spazio */
+        margin-top: 10px; 
+        font-family: fantasy;
     }
 }

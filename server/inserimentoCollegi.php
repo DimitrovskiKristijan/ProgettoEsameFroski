@@ -6,8 +6,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $Data_Collegio = $_POST['Data_Collegio'];
     $Ora_Inizio = $_POST['Ora_Inizio'];
     $Ora_Fine = $_POST['Ora_Fine'];
-    $Anno_Scolastico = date('Y'); // Ottieni l'anno corrente
-
+  
+    $collegioDate = DateTime::createFromFormat('Y-m-d', $Data_Collegio); 
+    
+    $collegioYear = $collegioDate->format('Y');
+    $collegioMonth = $collegioDate->format('m');
+    
+    if ($collegioMonth > 6) {
+        // Se siamo dopo giugno, l'anno scolastico è l'anno del collegio e l'anno successivo
+        $nextYearDate = clone $collegioDate;
+        $nextYearDate->modify('+1 year');
+        $nextYear = $nextYearDate->format('Y');
+        $Anno_Scolastico = "$collegioYear/$nextYear";
+    } else {
+        // Se siamo prima di luglio, l'anno scolastico è l'anno precedente e l'anno del collegio
+        $previousYearDate = clone $collegioDate;
+        $previousYearDate->modify('-1 year');
+        $previousYear = $previousYearDate->format('Y');
+        $Anno_Scolastico = "$previousYear/$collegioYear";
+    }
+    
     // Controlla se è stato inviato un file
     if (isset($_FILES['file'])) {
         $upload_dir = 'Uploads/'; // Modifica con il percorso della tua directory di upload
@@ -25,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Connessione al database
     $hostname = 'localhost';
-    $username = 'root'; // Cambia con le tue credenziali
+    $username = 'root'; 
     $password = ''; 
     $database = 'collegiumpress';
 
@@ -56,19 +74,18 @@ if ($File_CSV) {
          fgetcsv($handle);
 
         // Prepara la query per inserire i dati dal CSV nella tabella presenze
-        $query_csv = "INSERT INTO utenti (NomeCognome, Email, ID_Collegio) VALUES (?, ?, ?)";
+        $query_csv = "INSERT INTO utenti (NomeCognome, Email, Ruolo, ID_Collegio) VALUES (?, ?,'docente esterno', ?)";
         $stmt_csv = $con->prepare($query_csv);
 
         // Leggi ogni riga del file CSV e inserisci i dati nel database
         while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-            // Controlla se esiste la colonna nel file CSV
             if (!isset($data[1])) {
-                continue; // Salta questa riga se non esiste
+                continue; 
             }
         
             // Associa i valori letti dal CSV ai parametri della query
             $NomeCognome = $data[1]; // Prendi solo la colonna "Cognome e nome"
-            $Mail = ''; // Imposta un valore predefinito per Mail
+            $Mail = ''; 
             
             $stmt_csv->bind_param("ssi", $NomeCognome, $Mail, $collegio_id);
             
@@ -93,7 +110,6 @@ echo json_encode(['status' => 'success', 'message' => 'Collegio e dati inseriti 
     echo json_encode(['status' => 'error', 'message' => $stmt->error, 'details' => 'Errore durante l inserimento del collegio']);
 }
 // Chiudi la connessione al database
-//viva la figa e la droga
 $con->close();
 }
 ?>

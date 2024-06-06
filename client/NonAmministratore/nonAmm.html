@@ -49,7 +49,7 @@
                 <div class="presenza">
                     <h1 class="txtCont" id="userInfo"></h1>
                     <br>
-                    <button class="btn btn-primary m-2" id="btnPartecipa"><h1>PARTECIPA AL COLLEGIO</h1></button>
+                    <button class="btn btn-primary m-2" id="btnPartecipa" onclick="presenza()"><h1>PARTECIPA AL COLLEGIO</h1></button>
                     <button class="btn btn-primary m-2" id="btnStorico"><h1>Visualizza Storico</h1></button>
                     <button class="btn btn-primary m-2" id="btnIndietro"><h1>Indietro</h1></button>
                 </div>
@@ -59,12 +59,18 @@
         <div class="row" id="hideStorico">
             <div class="col text-center">
                 <h2>STORICO</h2>
-                <select id="annoScolastico" class="form-select m-2">
-                    <!-- Options will be populated here -->
-                </select>
-                <div class="storico"></div>
+                <div class="storico">
+                    <select id="annoScolastico" class="form-select m-2">
+                        <div id="datiFiltrati"></div>
+                    </select>
+                </div>
+               
             </div>
         </div>
+
+
+    
+
     </div>
 </body>
 </html>

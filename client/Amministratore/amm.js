@@ -1,4 +1,5 @@
 "use strict";
+let collegioCorrente = null;
 
 window.onload = async () => {
   //INIZIALIZZO VARIABILI
@@ -10,20 +11,20 @@ window.onload = async () => {
   document.getElementById("btnLogout").addEventListener("click", logout);
 
   //faccio il localStorage per prendere il nome e il cognome
-  let nome = localStorage.getItem("nome");
-  console.log("Nome:" + nome);
-
-  let cognome = localStorage.getItem("cognome");
-  console.log("Cognome:" + cognome);
+  let nomeCognome = localStorage.getItem("nome e cognome");
+  console.log("Nome e Cognome: " + nomeCognome);
 
   let email = localStorage.getItem("email");
   console.log("Email: " + email);
 
   let id = localStorage.getItem("id");
   console.log("ID: " + id);
+
   // Output dei dati
   let userInfo = document.getElementById("userInfo");
-  userInfo.innerText = `BENVENUTO\n  ${nome}, ${cognome} `;
+  userInfo.innerText = `BENVENUTO \n ${nomeCognome} `;
+  let userHead = document.getElementById("userHead");
+  userHead.innerText = ` ${nomeCognome} `;
 
   // Aggiungi un event listener al pulsante
   document
@@ -35,7 +36,7 @@ window.onload = async () => {
 async function popolaAnniScolastici() {
   try {
     // CHIAMATA PER OTTENERE GLI ANNI SCOLASTICI
-    let risposta2 = await fetch("/index.php?action=getAnno");
+    let risposta2 = await fetch("/index.php?action=getAnnoCollegi");
     let anniScolastici = await risposta2.json();
     console.log(anniScolastici);
 
@@ -171,8 +172,6 @@ async function inserisciCollegio() {
   } else {
     console.log("No JSON to parse or response not OK");
   }
-  // Riabilita il bottone di invio
-  //btnInvia.disabled = false;
 }
 
 // Funzione per ottenere e visualizzare i collegi
@@ -220,7 +219,8 @@ async function visualizzaCollegi() {
         collegio.Titolo,
         collegio.Data_Collegio,
         collegio.Ora_Inizio,
-        collegio.Ora_Fine
+        collegio.Ora_Fine,
+        collegio.File_CSV
       );
     });
     tbody.appendChild(row);
@@ -231,30 +231,173 @@ async function visualizzaCollegi() {
   divVecchi.appendChild(table);
 }
 
-//Funzione per mostrare le presenze
-async function mostraPresenze() {
-  //visualizza il modal
-  let creaCollegioModal = new bootstrap.Modal(
-    document.getElementById("creaPresenzeModal")
-  );
-  //mostra il modal e azzera i campi
-  creaCollegioModal.show();
-  document
-    .getElementById("creaPresenzeModal")
-    .addEventListener("hidden.bs.modal", function (event) {
-      // Trova tutti gli elementi input nel modal e li azzera
-      let inputs = this.querySelectorAll("input");
-      inputs.forEach((input) => (input.value = ""));
-    });
+// Funzione per ottenere l'ID_Collegio da un server
+async function getID_Collegio() {
+  let email = localStorage.getItem("email");
+  let response = await fetch("/index.php?action=getID_Collegio", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+    }),
+  });
 
-  // Aggiungi un event listener al bottone di invio del form
+  let data = await response.json();
+
+  if (data.error) alert(data.error);
+
+  if (response.ok) {
+    return data.ID_Collegio;
+  } else {
+    console.error(
+      "Recupero dell'ID_Collegio fallito con status:",
+      response.status
+    );
+    return null;
+  }
+}
+
+async function mostraPresenze(idDocente) {
+  let idCollegio = await getID_Collegio();
   let btnInvia = document.getElementById("btnInvia");
   btnInvia.disabled = false;
 
   document
-    .getElementById("btnInvia")
-    .addEventListener("click", inserisciCollegio);
+    .getElementById("btnVisualizzaPresenze")
+    .addEventListener("click", async function () {
+      let response = await fetch("/index.php?action=verificaPresenze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "verificaPresenzaDocente",
+          idDocente: idDocente,
+          idCollegio: idCollegio,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error(
+          "Errore durante il recupero delle informazioni sulla presenza:",
+          response.status
+        );
+        return;
+      }
+
+      let presenze = await response.json();
+      console.log(presenze);
+      console.log("ID_Collegio:", idCollegio);
+
+      presenze.forEach((presenza) => {
+        console.log("ID_col:", presenza.ID_Collegio);
+
+        if (presenza.ID_Collegio === idCollegio) {
+          console.log(
+            `Il docente ${presenza.NomeCognome} ha firmato nel collegio corretto.`
+          );
+          alert(
+            `Il docente ${presenza.NomeCognome} ha firmato nel collegio corretto.`
+          );
+        } else {
+          console.log(
+            `Il docente ${presenza.NomeCognome} ha firmato nel collegio corretto.`
+          );
+          alert(
+            `Il docente ${presenza.NomeCognome} non ha firmato nel collegio corretto.`
+          );
+        }
+      });
+    });
 }
+
+/****************************************************************************************************************************** */
+
+function visDatiCollegio2(titolo, dataCollegio, oraInizio, oraFine, File_CSV) {
+  console.log("Titolo:", titolo);
+  console.log("Data del collegio:", dataCollegio);
+  console.log("Ora di inizio:", oraInizio);
+  console.log("Ora di Fine:", oraFine);
+  console.log("File:", File_CSV);
+
+  let ModificaCollegioModal = new bootstrap.Modal(
+    document.getElementById("ModificaCollegioModal")
+  );
+  // Mostra il modal e azzera i campi
+  ModificaCollegioModal.show();
+
+  document
+    .getElementById("btnModifica")
+    .addEventListener("click", async function () {
+      console.log("Modifica cliccata");
+
+      let modal = new bootstrap.Modal(document.getElementById("Modifica"));
+      modal.show();
+
+      document.getElementById("titleModifica").value = titolo;
+      document.getElementById("Ora_InizioModifica").value = oraInizio;
+      document.getElementById("Ora_FineModifica").value = oraFine;
+      document.getElementById("dateModifica").value = dataCollegio;
+      // document.getElementById("fileModifica").value = File_CSV; // Rimuoviamo questa linea
+
+      document
+        .getElementById("btnEseguiModifica")
+        .addEventListener("click", async function () {
+          console.log("Modifica cliccata");
+
+          let titoloModificato = document.getElementById("titleModifica").value;
+          let oraInizioModificato =
+            document.getElementById("Ora_InizioModifica").value;
+          let oraFineModificato =
+            document.getElementById("Ora_FineModifica").value;
+          let DataModificato = document.getElementById("dateModifica").value;
+          let fileModificato = document.getElementById("fileModifica").files[0]; // Ottieni il file selezionato
+
+          let objDati = {
+            titolo: titolo,
+            dataCollegio: dataCollegio,
+            oraInizio: oraInizio,
+            oraFine: oraFine,
+            titoloModificato: titoloModificato,
+            oraInizioModificato: oraInizioModificato,
+            oraFineModificato: oraFineModificato,
+            DataModificato: DataModificato,
+          };
+
+          let formData = new FormData();
+          formData.append("objDati", JSON.stringify(objDati));
+          if (fileModificato) {
+            formData.append("FileModificato", fileModificato);
+          }
+
+          richiamaModifica(formData);
+        });
+    });
+
+  async function richiamaModifica(formData) {
+    let opzioni = {
+      method: "POST",
+      body: formData, // Usa il FormData come corpo della richiesta
+    };
+
+    // CHIAMATA PER IL CONTROLLO DEL RUOLO UTENTE
+    let risposta3 = await fetch("/index.php?action=modificaCollegio", opzioni);
+
+    let testo3 = await risposta3.json();
+    console.log(testo3);
+
+    ModificaCollegioModal.hide();
+
+    if (testo3.message == "Dati aggiornati con successo") {
+      alert("Modifica Effettuata con successo");
+      window.location.reload();
+    }
+  }
+}
+
+/****************************************************************************************************************************** */
 
 // Funzione per gestire il logout
 async function logout() {
@@ -283,91 +426,5 @@ async function logout() {
     console.log("Server response:", textResponse);
   } catch (error) {
     console.error("An error occurred during logout:", error);
-  }
-}
-
-/****************************************************************************************************************************** */
-
-function visDatiCollegio2(titolo, dataCollegio, oraInizio, oraFine, File_CSV) {
-  console.log("Titolo:", titolo);
-  console.log("Data del collegio:", dataCollegio);
-  console.log("Ora di inizio:", oraInizio);
-  console.log("Ora di Fine:", oraFine);
-  console.log("File:", File_CSV);
-
-  let ModificaCollegioModal = new bootstrap.Modal(
-    document.getElementById("ModificaCollegioModal")
-  );
-  //mostra il modal e azzera i campi
-  ModificaCollegioModal.show();
-
-  document
-    .getElementById("btnModifica")
-    .addEventListener("click", async function () {
-      console.log("Modifica cliccata");
-
-      let modal = new bootstrap.Modal(document.getElementById("Modifica"));
-      modal.show();
-
-      document.getElementById("titleModifica").value = titolo;
-      document.getElementById("Ora_InizioModifica").value = oraInizio;
-      document.getElementById("Ora_FineModifica").value = oraFine;
-      document.getElementById("dateModifica").value = dataCollegio;
-      //document.getElementById("fileModifica").value = File_CSV;
-
-      document
-        .getElementById("btnEseguiModifica")
-        .addEventListener("click", function () {
-          console.log("Modifica cliccata");
-
-          let titoloModificato = document.getElementById("titleModifica").value;
-          let oraInizioModificato =
-            document.getElementById("Ora_InizioModifica").value;
-          let oraFineModificato =
-            document.getElementById("Ora_FineModifica").value;
-          let DataModificato = document.getElementById("dateModifica").value;
-          let FileModificato = document.getElementById("FileModifica");
-          if (FileModificato && FileModificato.value)
-            FileModificato = document.getElementById("FileModifica").value;
-          else FileModificato = null;
-
-          let objDati = {
-            titolo: titolo,
-            dataCollegio: dataCollegio,
-            oraInizio: oraInizio, //DEVI METTERE APOSTO GUARDA COME FARE
-            oraFine: oraFine,
-            titoloModificato: titoloModificato,
-            oraInizioModificato: oraInizioModificato,
-            oraFineModificato: oraFineModificato,
-            DataModificato: DataModificato,
-            FileModificato: FileModificato,
-          };
-          console.log(objDati);
-          richiamaModifica(objDati);
-        });
-    });
-
-  async function richiamaModifica(objDati) {
-    let opzioni = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json", // Specifica che il corpo della richiesta è in formato JSON
-      },
-      body: JSON.stringify(objDati), // Trasforma i dati in formato JSON per il corpo della richiesta
-    };
-
-    // CHIAMATA PER IL CONTROLLO DEL RUOLO UTENTE
-    let risposta3 = await fetch("/index.php?action=modificaCollegio", opzioni);
-
-    let testo3 = await risposta3.json();
-    console.log(testo3);
-
-    ModificaCollegioModal.hide();
-
-    if (testo3.message == "Dati aggiornati con successo") {
-      alert("Modifica Effettuata con successo");
-
-      window.location.reload();
-    }
   }
 }

@@ -78,7 +78,8 @@ CREATE TABLE `presenze` (
   `ID_Utente` int(11) NOT NULL,
   `ID_Collegio` int(11) NOT NULL,
   `DataOra_Registrazione` datetime DEFAULT current_timestamp(),
-  `DataOra_Uscita` datetime DEFAULT current_timestamp(),
+  `DataOra_Uscita` datetime DEFAULT cu  rrent_timestamp(),
+  `Anno_Scolastico` varchar(100) NOT NULL,
   PRIMARY KEY (`ID_Presenza`),
   KEY `FK_Utente` (`ID_Utente`),
   KEY `FK_Collegio` (`ID_Collegio`)
@@ -103,14 +104,14 @@ CREATE TABLE `utenti` (
 --
 
 INSERT INTO `utenti` (`ID_Utente`, `NomeCognome`, `Email`, `Ruolo`,`ID_Collegio`) VALUES
-(1, 'Forna Riki', 'rikifor05@gmail.com', 'docente esterno',1),
-(2, 'Narzole Padel', 'Padel', 'narzolepadel@gmail.com', 'docente esterno',1),
+(1, 'Riki Forna', 'rikifor05@gmail.com', 'docente esterno',1),
+(2, 'Padel Narzole', 'narzolepadel@gmail.com', 'docente esterno',1),
 (3, 'FORNASERI RICCARDO', 'r.fornaseri.2245@vallauri.edu', 'amministratore',1);
 
 --
 -- Indici per le tabelle scaricate
 --
-
+ALTER TABLE tabella AUTO_INCREMENT = 0;
 --
 -- Indici per le tabelle `collegi`
 --

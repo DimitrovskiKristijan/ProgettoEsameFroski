@@ -1,12 +1,10 @@
-
 <?php
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Ricezione dei dati inviati dal client tramite una richiesta POST
-    $data = json_decode(file_get_contents("php://input"), true);
+    // Estrai i dati JSON dall'oggetto POST
+    $data = json_decode($_POST['objDati'], true);
 
-    // Verifica se i dati JSON sono stati ricevuti correttamente
     if (isset($data) && isset($data['titolo']) && isset($data['dataCollegio'])) {
-        // Estrai il nome e il cognome dall'oggetto $data
+        // Estrai i dati dall'oggetto $data
         $titolo = $data['titolo'];
         $dataCollegio = $data['dataCollegio'];
         $oraFine = $data['oraFine'];
@@ -15,178 +13,106 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $oraInizioModificato = $data['oraInizioModificato'];
         $oraFineModificato = $data['oraFineModificato'];
         $DataModificato = $data['DataModificato'];
-        $file_CSV = $data['fileModifica'];
-        
 
         // Parametri di connessione al database
         $hostname = 'localhost';
-        $username = 'root'; // Cambia con le tue credenziali
+        $username = 'root'; 
         $password = ''; 
         $database = 'collegiumpress';
 
-        // Connessione al database
         $conn = new mysqli($hostname, $username, $password, $database);
 
-        // Verifica se c'è stato un errore nella connessione al database
         if ($conn->connect_error) {
             die("Connessione al database fallita: " . $conn->connect_error);
         }
-        
-        // Prepara la query SQL per cercare un record nel database con i valori ricevuti dal client
-        $query = "SELECT ID_Collegio FROM collegi WHERE Titolo = ? AND Data_Collegio = ? AND Ora_Inizio = ? AND Ora_Fine = ? AND File_CSV = ?" ;
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("sssss", $titolo, $dataCollegio, $oraInizio, $oraFine, $file_CSV);
-        // Esegui la query SQL
-        $stmt->execute();
 
-        // Ottieni il risultato della query
+        // Prepara la query SQL per cercare un record nel database con i valori ricevuti dal client
+        $query = "SELECT ID_Collegio FROM collegi WHERE Titolo = ? AND Data_Collegio = ? AND Ora_Inizio = ? AND Ora_Fine = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ssss", $titolo, $dataCollegio, $oraInizio, $oraFine);
+        $stmt->execute();
         $result = $stmt->get_result();
-        
-        // Controlla se è stato trovato un record corrispondente
+
         if ($result->num_rows > 0) {
-            
             $row = $result->fetch_assoc();
             $idCollegio = $row['ID_Collegio'];
 
             // Prepara la query SQL per l'aggiornamento del record nel database
-            $query_update = "UPDATE collegi SET Titolo = ?, Data_Collegio = ?, Ora_Inizio = ?, Ora_Fine = ?, File_CSV =? WHERE ID_Collegio = ?";
+            $query_update = "UPDATE collegi SET Titolo = ?, Data_Collegio = ?, Ora_Inizio = ?, Ora_Fine = ? WHERE ID_Collegio = ?";
             $stmt_update = $conn->prepare($query_update);
-            $stmt_update->bind_param("sssssi", $titoloModificato, $DataModificato, $oraInizioModificato, $oraFineModificato, $file_CSV, $idCollegio );
-
+            $stmt_update->bind_param("ssssi", $titoloModificato, $DataModificato, $oraInizioModificato, $oraFineModificato, $idCollegio);
             $stmt_update->execute();
-            
 
-            // Controlla se l'aggiornamento è stato eseguito con successo
             if ($stmt_update->affected_rows > 0) {
-                // Aggiornamento eseguito con successo
                 $response = array('success' => true, 'message' => 'Dati aggiornati con successo');
             } else {
-                // Nessuna riga è stata modificata, quindi potrebbe non esserci corrispondenza o i dati potrebbero essere gli stessi
                 $response = array('success' => true, 'message' => 'Nessuna modifica effettuata');
+            }
+
+            if (isset($_FILES["FileModificato"]) && $_FILES["FileModificato"]["error"] == 0) {
+                $fileName = $_FILES["FileModificato"]["name"];
+                $fileTmpPath = $_FILES["FileModificato"]["tmp_name"];
+                $uploadDir = "./uploaded_files/";
+
+                // Verifica se la directory esiste, altrimenti creala
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $destPath = $uploadDir . $fileName;
+
+                if (move_uploaded_file($fileTmpPath, $destPath)) {
+                    // Aggiorna il campo File_CSV nella tabella collegi
+                    $query_update_file = "UPDATE collegi SET File_CSV = ? WHERE ID_Collegio = ?";
+                    $stmt_update_file = $conn->prepare($query_update_file);
+                    $stmt_update_file->bind_param("si", $fileName, $idCollegio);
+                    $stmt_update_file->execute();
+                    $stmt_update_file->close();
+
+                    // Leggi il contenuto del file CSV e aggiorna la tabella utenti
+                    $fileContent = file_get_contents($destPath);
+                    $lines = explode("\n", $fileContent);
+
+                    foreach ($lines as $line) {
+                        $fields = str_getcsv($line);
+                        if (count($fields) < 2) {
+                            continue;
+                        }
+                        $nome = $fields[0];
+                        $email = $fields[1];
+
+                        // Prepara la query SQL per l'aggiornamento del record nella tabella utenti
+                        $query_update_utenti = "UPDATE utenti SET email = ? WHERE nome = ?";
+                        $stmt_update_utenti = $conn->prepare($query_update_utenti);
+                        $stmt_update_utenti->bind_param("ss", $email, $nome);
+                        $stmt_update_utenti->execute();
+                        $stmt_update_utenti->close();
+                    }
+                } else {
+                    $response = array('success' => false, 'message' => 'Errore nel caricamento del file');
+                }
             }
 
             $stmt->close();
             $stmt_update->close();
-
         } else {
-            // Se non è stato trovato un record corrispondente, potresti decidere di inserire un nuovo record
-            // In alternativa, puoi restituire un messaggio di errore o gestire diversamente questa situazione
             $response = array('success' => false, 'message' => 'Record non trovato nel database');
         }
-        
+
         echo json_encode($response);
-   
     } else {
-        // Se i dati JSON non sono stati ricevuti correttamente, restituisco un messaggio di errore
         echo json_encode(array('error' => 'Dati mancanti o non validi'));
     }
 } else {
-    // Se la richiesta non è una richiesta POST, restituisco un messaggio di errore
     echo json_encode(array('error' => 'Metodo di richiesta non consentito'));
 }
 
-
-// Funzione per preparare una risposta JSON standardizzata
 function preparaRisp($cod, $desc, $jObj = null) {
     if (is_null($jObj)) {
         $jObj = new stdClass();
     }
     $jObj->cod = $cod;
     $jObj->desc = $desc;
-    return $jObj;
+   return $jObj;
 }
-
-/*
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Ricezione dei dati inviati dal client tramite una richiesta POST
-    $data = json_decode(file_get_contents("php://input"), true);
-
-    // Verifica se i dati JSON sono stati ricevuti correttamente
-    if ($data !== null && isset($data['titolo']) && isset($data['dataCollegio'])) {
-        // Estrai il nome e il cognome dall'oggetto $data
-        $titolo = $data['titolo'];
-        $dataCollegio = $data['dataCollegio'];
-        $oraFine = $data['oraFine'];
-        $oraInizio = $data['oraInizio'];
-
-
-        // Parametri di connessione al database
-        $hostname = 'localhost';
-        $username = 'root'; // Cambia con le tue credenziali
-        $password = ''; 
-        $database = 'collegiumpress';
-
-        // Connessione al database
-        $conn = new mysqli($hostname, $username, $password, $database);
-
-        // Verifica se c'è stato un errore nella connessione al database
-        if ($conn->connect_error) {
-            die("Connessione al database fallita: " . $conn->connect_error);
-        }
-        
-        // Prepara la query SQL per cercare un record nel database con i valori ricevuti dal client
-        $query = "SELECT id FROM nome_tabella WHERE titolo = ? AND dataCollegio = ? AND oraInizio = ? AND oraFine = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("sss", $titolo, $dataCollegio, $oraInizio, $oraFine);
-
-        // Esegui la query SQL
-        $stmt->execute();
-
-        // Ottieni il risultato della query
-        $result = $stmt->get_result();
-
-        // Controlla se è stato trovato un record corrispondente
-        if ($result->num_rows > 0) {
-            // Se è stato trovato un record corrispondente, esegui l'aggiornamento
-
-//DA MODIFICARE
-
-            $query_update = "UPDATE nome_tabella SET oraFine = ? WHERE titolo = ? AND dataCollegio = ? AND oraInizio = ?";
-            $stmt_update = $conn->prepare($query_update);
-            $stmt_update->bind_param("ssss", $oraFine, $titolo, $dataCollegio, $oraInizio);
-            $stmt_update->execute();
-
-            // Controlla se l'aggiornamento è stato eseguito con successo
-            if ($stmt_update->affected_rows > 0) {
-                // Aggiornamento eseguito con successo
-                $response = array('success' => true, 'message' => 'Dati aggiornati con successo');
-            } else {
-                // Nessuna riga è stata modificata, quindi potrebbe non esserci corrispondenza o i dati potrebbero essere gli stessi
-                $response = array('success' => true, 'message' => 'Nessuna modifica effettuata');
-            }
-        } else {
-            // Se non è stato trovato un record corrispondente, potresti decidere di inserire un nuovo record
-            // In alternativa, puoi restituire un messaggio di errore o gestire diversamente questa situazione
-            $response = array('success' => false, 'message' => 'Record non trovato nel database');
-        }
-
-        // Chiudi le query preparate
-        $stmt->close();
-        $stmt_update->close();
-
-        // Restituisci la risposta in formato JSON
-        echo json_encode($response);
-   
-    } else {
-        // Se i dati JSON non sono stati ricevuti correttamente, restituisco un messaggio di errore
-        echo json_encode(array('error' => 'Dati mancanti o non validi'));
-    }
-} else {
-    // Se la richiesta non è una richiesta POST, restituisco un messaggio di errore
-    echo json_encode(array('error' => 'Metodo di richiesta non consentito'));
-}
-
-
-// Funzione per preparare una risposta JSON standardizzata
-function preparaRisp($cod, $desc, $jObj = null) {
-    if (is_null($jObj)) {
-        $jObj = new stdClass();
-    }
-    $jObj->cod = $cod;
-    $jObj->desc = $desc;
-    return $jObj;
-}
-*/
-
-?>
 

@@ -4,15 +4,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $data = json_decode(file_get_contents("php://input"), true);
 
     // Verifica se i dati JSON sono stati ricevuti correttamente
-    if ($data !== null && isset($data['nome']) && isset($data['cognome']) && isset($data['email'])) {
-        // Estrai il nome, il cognome e l'email dall'oggetto $data
-        $nome = $data['nome'];
-        $cognome = $data['cognome'];
+    if ($data !== null && isset($data['nomeCognome']) && isset($data['email'])&& isset($data['ID_Collegio'])) {
+        $NomeCognome = $data['nomeCognome'];
         $email = $data['email'];
+        $ID_Collegio = $data['ID_Collegio']; 
 
         // Ottieni la data corrente
         $dataCorrente = date('Y-m-d');
+        // Ottieni l'anno corrente e il mese corrente
+        $annoCorrente = date('Y');
+        $meseCorrente = date('m');
 
+        // Determina l'anno scolastico
+        if ($meseCorrente >= 9) {
+            $annoScolastico = $annoCorrente . '/' . ($annoCorrente + 1);
+        } else {
+            $annoScolastico = ($annoCorrente - 1) . '/' . $annoCorrente;
+        }
         // Parametri di connessione al database
         $hostname = 'localhost';
         $username = 'root'; 
@@ -28,8 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         // Prepara la query SQL per ottenere l'ID dell'utente con il nome, cognome ed email specificati
-        $stmt = $conn->prepare("SELECT ID_Utente FROM Utenti WHERE Nome = ? AND Cognome = ? AND Email = ?");
-        $stmt->bind_param("sss", $nome, $cognome, $email);
+        $stmt = $conn->prepare("SELECT ID_Utente FROM Utenti WHERE nomeCognome = ? AND Email = ?");
+        $stmt->bind_param("ss", $NomeCognome, $email);
         $stmt->execute();
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
@@ -47,9 +55,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
             } else {
                 // L'utente non ha ancora firmato oggi, quindi registra la sua presenza
-                $stmt = $conn->prepare("INSERT INTO Presenze (ID_Utente, ID_Collegio) VALUES (?, ?)");
-                $id_collegio = 8; // Sostituisci con l'ID del collegio corretto
-                $stmt->bind_param("ii", $user['ID_Utente'], $id_collegio);
+                $stmt = $conn->prepare("INSERT INTO Presenze (ID_Utente, ID_Collegio, Anno_Scolastico) VALUES (?, ?, ?)");
+                $stmt->bind_param("iis", $user['ID_Utente'], $ID_Collegio, $annoScolastico);
                 $stmt->execute();
                 if ($conn->affected_rows > 0) {
                     // La presenza è stata registrata con successo
